@@ -1,0 +1,21 @@
+webcrawler/
+├─ app/
+│  ├─ __init__.py
+│  ├─ main.py
+│  ├─ config.py
+│  ├─ models.py
+│  ├─ scheduler.py
+│  ├─ crawler.py
+│  ├─ fetchers.py
+│  ├─ analyzer.py
+│  ├─ reporter.py
+│  ├─ notifier.py
+│  └─ state.py
+├─ reports/
+├─ state/
+├─ crawler.config.yaml
+├─ requirements.txt
+├─ Dockerfile
+├─ docker-compose.yml
+├─ .env.example
+└─ README.md

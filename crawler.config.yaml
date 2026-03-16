@@ -1,0 +1,141 @@
+global:
+  user_agent: "ResearchCrawler/3.0-test"
+  max_concurrency: 4
+  request_timeout_sec: 20
+  enable_snapshots: true
+  obey_robots_txt: true
+  robots_default: "respect"
+  output_dir: "./reports"
+  state_dir: "./state"
+  snapshot_dir: "./snapshots"
+  timezone: "UTC"
+
+domain_policies: []
+
+email:
+  enabled: false
+  smtp_host: ""
+  smtp_port: 587
+  smtp_user: ""
+  smtp_password_env: "CRAWLER_SMTP_PASSWORD"
+  from: ""
+  to: []
+  subject_prefix: "[Crawler Alert]"
+
+teams:
+  enabled: false
+  webhook_url_env: "TEAMS_WEBHOOK_URL"
+
+topics:
+  - name: "Autos"
+    enabled: false
+    schedule: "*/5 * * * *"
+    keywords:
+      include: ["gebrauchtwagen", "opel astra", "astra"]
+      exclude: []
+      regex:
+        [
+          "(?i)gebraucht\\s*wagen",
+          "(?i)opel\\s+astra",
+          "(?is)(?=.*gebraucht\\s*wagen)(?=.*opel\\s+astra)",
+        ]
+    discovery:
+      use_sitemap: true
+      sitemap_urls:
+        ["https://www.opel-nau.de/gebrauchtwagen/fahrzeugangebote/sitemap.xml"]
+      use_rss: false
+      rss_urls: []
+      max_seed_urls: 200
+    alerting:
+      min_quality_score: 20
+      min_confidence: 0.3
+      suppress_if_contains: []
+      keyword_weights:
+        "gebrauchtwagen": 0.9
+        "opel astra": 1.0
+        "astra": 0.6
+        "regex:(?i)gebraucht\\s*wagen": 0.9
+        "regex:(?i)opel\\s+astra": 1.0
+        "regex:(?is)(?=.*gebraucht\\s*wagen)(?=.*opel\\s+astra)": 1.0
+    crawl:
+      max_depth: 4
+      max_pages: 40
+      allowed_domains: ["www.opel-nau.de"]
+      start_urls: ["https://www.opel-nau.de/gebrauchtwagen/fahrzeugangebote/"]
+      include_url_patterns: ["/gebrauchtwagen"]
+      exclude_url_patterns: []
+      render_js: true
+
+  - name: "KI Heise"
+    enabled: true
+    schedule: "*/15 * * * *"
+    keywords:
+      include:
+        [
+          "künstliche intelligenz",
+          "machine learning",
+          "openai",
+          "claude",
+          "chatgpt",
+          "llm",
+          "llms",
+          "artificial intelligence",
+          "artificial",
+          "gen ai",
+          "genai",
+          "generative ai",
+          "vibe code",
+          "vibe coding",
+          "agentic ai",
+          "agents",
+          "context engineering",
+          "prompt engineering",
+          "generative ai",
+          "large language model",
+        ]
+      exclude: []
+      regex:
+        [
+          "(?i)künstliche\\s+intelligenz",
+          "(?i)machine\\s+learning",
+          "(?i)generative\\s+ai",
+          "(?i)\\bllm(s)?\\b",
+          "(?i)large\\s+language\\s+model(s)?",
+        ]
+    discovery:
+      use_sitemap: true
+      sitemap_urls:
+        [
+          "https://www.heise.de/sitemaps/news.xml",
+          "https://www.golem.de/sitemap.xml",
+        ]
+      use_rss: true
+      rss_urls:
+        [
+          "https://www.heise.de/rss/heise-atom.xml",
+          "https://rss.golem.de/rss.php?feed=RSS2.0",
+        ]
+      max_seed_urls: 300
+    alerting:
+      min_quality_score: 30
+      min_confidence: 0.45
+      suppress_if_contains: []
+      keyword_weights:
+        "künstliche intelligenz": 1.0
+        "machine learning": 0.85
+        "openai": 0.8
+        "generative ai": 0.85
+        "large language model": 0.85
+        "regex:(?i)künstliche\\s+intelligenz": 1.0
+        "regex:(?i)machine\\s+learning": 0.85
+        "regex:(?i)generative\\s+ai": 0.85
+        "regex:(?i)\\bllm(s)?\\b": 0.9
+        "regex:(?i)large\\s+language\\s+model(s)?": 0.9
+    crawl:
+      max_depth: 3
+      max_pages: 50
+      allowed_domains: ["heise.de", "golem.de"]
+      start_urls: ["https://www.heise.de/news/", "https://www.golem.de/news/"]
+      include_url_patterns: ["/news/"]
+      exclude_url_patterns: ["/forum/", "view=print"]
+      render_js: true

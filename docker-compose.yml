@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  crawler:
+    build: .
+    container_name: webcrawler
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./reports:/app/reports
+      - ./state:/app/state
+      - ./crawler.config.yaml:/app/crawler.config.yaml:ro

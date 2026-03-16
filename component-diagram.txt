@@ -1,0 +1,57 @@
+                           +----------------------+
+                           |  Admin UI / API      |
+                           |  - topic config      |
+                           |  - domain policies   |
+                           |  - alert tuning      |
+                           +----------+-----------+
+                                      |
+                                      v
++-------------------+       +---------+---------+        +----------------------+
+| Scheduler         | ----> | Crawl Orchestrator| -----> | Job Queue (Kafka/SQS)|
+| - cron/rules      |       | - budgets/priority|        | - durable jobs       |
++-------------------+       +----+--------------+        +----------+-----------+
+                                 |                                  |
+                                 v                                  v
+                       +---------+---------+               +--------+---------+
+                       | Crawl Workers     |               | JS Workers       |
+                       | - HTTP crawler    |               | - Playwright     |
+                       | - robots policy   |               | - login flows    |
+                       +----+--------------+               +--------+---------+
+                            |                                       |
+                            +-------------------+-------------------+
+                                                v
+                                 +--------------+------------------+
+                                 | Extraction & Normalization      |
+                                 | - boilerplate removal           |
+                                 | - content quality scoring       |
+                                 | - canonical URL                 |
+                                 +--------------+------------------+
+                                                |
+                                                v
+                                 +--------------+------------------+
+                                 | Dedup Engine                     |
+                                 | - exact hash                     |
+                                 | - near-dup simhash/minhash       |
+                                 +--------------+------------------+
+                                                |
+                     +--------------------------+----------------------------+
+                     |                           |                           |
+                     v                           v                           v
+          +----------+----------+      +---------+----------+      +--------+---------+
+          | Metadata DB         |      | Search Index       |      | Snapshot Storage |
+          | Postgres            |      | OpenSearch         |      | S3/Blob          |
+          +----------+----------+      +---------+----------+      +--------+---------+
+                     |                           |
+                     +------------+--------------+
+                                  v
+                        +---------+----------+
+                        | Alerting Engine     |
+                        | - keyword rules     |
+                        | - false-positive ML |
+                        | - suppression        |
+                        +----+------------+---+
+                             |            |
+                             v            v
+                      +------+----+   +---+-------+
+                      | Email     |   | Teams/SIEM|
+                      +-----------+   +-----------+
